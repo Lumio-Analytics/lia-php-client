@@ -12,24 +12,24 @@ class Integration
      *
      * @var string[]
      */
-    protected static $fieldFormats = [
-        'id'               => ['required' => false, 'format' => '/[0-9a-fA-F]{5,25}/'],
-        'key'              => ['required' => true, 'format' => '/^\w{40}$/'],
-        'url'              => ['required' => true, 'format' => '/https?:\/\/.*/'],
-        'platform'         => ['required' => true, 'format' => '/^.{0,64}$/'],
-        'platform_version' => ['required' => true, 'format' => '/^.{0,16}$/'],
-        'plugin'           => ['required' => true, 'format' => '/^.{0,64}$/'],
-        'plugin_version'   => ['required' => true, 'format' => '/^.{0,16}$/'],
-        'status'           => ['required' => true, 'format' => '/^(in)?active$/'],
-        'create_date'      => ['required' => false, 'format' => '/\d{10}/'],
-        'update_date'      => ['required' => false, 'format' => '/\d{10}/'],
-    ];
+    protected static $fieldFormats = array(
+        'id'               => array('required' => false, 'format' => '/array(0-9a-fA-F]{5,25}/'),
+        'key'              => array('required' => true, 'format' => '/^\w{40}$/'),
+        'url'              => array('required' => true, 'format' => '/https?:\/\/.*/'),
+        'platform'         => array('required' => true, 'format' => '/^.{0,64}$/'),
+        'platform_version' => array('required' => true, 'format' => '/^.{0,16}$/'),
+        'plugin'           => array('required' => true, 'format' => '/^.{0,64}$/'),
+        'plugin_version'   => array('required' => true, 'format' => '/^.{0,16}$/'),
+        'status'           => array('required' => true, 'format' => '/^(in)?active$/'),
+        'create_date'      => array('required' => false, 'format' => '/\d{10}/'),
+        'update_date'      => array('required' => false, 'format' => '/\d{10}/'),
+        );
     /**
      * Associative array for storing property values
      *
      * @var mixed[]
      */
-    protected $container = [];
+    protected $container = array();
 
     /**
      * Constructor
@@ -303,7 +303,7 @@ class Integration
             if (self::$fieldFormats[$key]['required'] && is_null($value)) {
                 return false;
             }
-            if ( !is_null($value) && !preg_match(self::$fieldFormats[$key]['format'], $value)) {
+            if (!is_null($value) && !preg_match(self::$fieldFormats[$key]['format'], $value)) {
                 return false;
             }
         }

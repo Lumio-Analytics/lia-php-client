@@ -7,7 +7,6 @@ namespace Lumio\IntegrationAPI;
 
 class Client
 {
-
     public static $endpoint = 'https://api.lumio.page/integration';
     public static $user_agent = 'Lumio\IntegrationAPI 1.0';
     private $_endpoint;
@@ -30,7 +29,7 @@ class Client
 
     public function registerIntegration(\Lumio\IntegrationAPI\Model\Integration $integration)
     {
-        if ( ! $this->qualify($integration) && ! $this->_debug) {
+        if (! $this->qualify($integration) && ! $this->_debug) {
             return;
         }
 
@@ -74,7 +73,10 @@ class Client
         if ($this->_debug) {
             curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
         }
-        curl_setopt($this->ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt(
+            $this->ch,
+            CURLOPT_HTTPHEADER,
+            array(
                 'Accept: application/json',
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($payload)
@@ -89,12 +91,12 @@ class Client
         $this->status      = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
     }
 
-    function log($msg)
+    private function log($msg)
     {
-        if ( ! $this->_debug) {
+        if (!$this->_debug) {
             return;
         }
-        if ( ! $this->_logfile) {
+        if (!$this->_logfile) {
             error_log($msg);
         } else {
             error_log($msg . "\n", 3, $this->_logfile);
