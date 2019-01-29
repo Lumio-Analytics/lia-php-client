@@ -7,12 +7,12 @@ namespace Lumio\IntegrationAPI;
 
 class Client
 {
-    public static $endpoint = 'https://api.lumio.page/integration';
-    public static $user_agent = 'Lumio\IntegrationAPI 1.0';
-    private $_endpoint;
-    private $_user_agent;
-    private $_debug;
-    private $_logfile;
+    public static $default_endpoint = 'https://api.lumio.page/integration';
+    public static $default_user_agent = 'Lumio\IntegrationAPI 1.0';
+    private $endpoint;
+    private $user_agent;
+    private $debug;
+    private $logfile;
 
     private $success = false;
     private $headers;
@@ -22,18 +22,20 @@ class Client
 
     public function __construct($endpoint = null, $debug = false, $logfile = null, $user_agent = null)
     {
-        $this->_debug      = $debug;
-        $this->_endpoint   = is_null($endpoint) ? self::$endpoint : $endpoint;
-        $this->_user_agent = is_null($user_agent) ? self::$endpoint . ' php v' . phpversion() : $user_agent;
+        $this->debug      = $debug;
+        $this->endpoint   = is_null($endpoint) ? self::$default_endpoint : $endpoint;
+        $this->user_agent = is_null($user_agent) ?
+            self::$default_endpoint . ' php v' . phpversion() :
+            $default_user_agent;
     }
 
     public function registerIntegration(\Lumio\IntegrationAPI\Model\Integration $integration)
     {
-        if (! $this->qualify($integration) && ! $this->_debug) {
+        if (! $this->qualify($integration) && ! $this->debug) {
             return;
         }
 
-        $this->initCurl($this->_endpoint);
+        $this->initCurl($this->endpoint);
         $this->verbThePayload('POST', $integration);
         if ($this->status == 200) {
             $this->success = true;
@@ -55,7 +57,7 @@ class Client
         $this->success = $this->json = null;
         $this->ch      = curl_init($url);
         //curl_setopt($this->ch, CURLOPT_USERPWD, $this->_user . ':' . $this->_password);
-        curl_setopt($this->ch, CURLOPT_USERAGENT, $this->_user_agent);
+        curl_setopt($this->ch, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->ch, CURLOPT_FAILONERROR, false);
         // Some versions of openssl seem to need this
@@ -66,11 +68,11 @@ class Client
         $this->headers = '';
     }
 
-    private function verbThePayload($verb, String $payload)
+    private function verbThePayload($verb, $payload)
     {
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $verb);
         curl_setopt($this->ch, CURLOPT_POSTFIELDS, $payload);
-        if ($this->_debug) {
+        if ($this->debug) {
             curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
         }
         curl_setopt(
@@ -93,13 +95,13 @@ class Client
 
     private function log($msg)
     {
-        if (!$this->_debug) {
+        if (!$this->debug) {
             return;
         }
-        if (!$this->_logfile) {
+        if (!$this->logfile) {
             error_log($msg);
         } else {
-            error_log($msg . "\n", 3, $this->_logfile);
+            error_log($msg . "\n", 3, $this->logfile);
         }
     }
 
@@ -123,7 +125,7 @@ class Client
     public function dump()
     {
         echo "Endpoit: \n";
-        var_dump($this->_endpoint);
+        var_dump($this->endpoint);
         echo "\nStatus: \n";
         var_dump($this->status);
         echo "\njson: \n";
