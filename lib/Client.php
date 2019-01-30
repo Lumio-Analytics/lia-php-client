@@ -36,7 +36,7 @@ class Client
         }
 
         $this->initCurl($this->endpoint);
-        $this->verbThePayload('POST', $integration);
+        $this->verbThePayload('POST', "" . $integration);
         if ($this->status == 200) {
             $this->success = true;
             $this->log("Registration result " . $this->status . ": Ok!");
